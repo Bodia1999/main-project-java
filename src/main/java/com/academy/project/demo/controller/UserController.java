@@ -1,7 +1,9 @@
 package com.academy.project.demo.controller;
 
 import com.academy.project.demo.dto.UserSummary;
+import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.UserUpdateRequest;
+import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.security.CurrentUser;
 import com.academy.project.demo.security.UserPrincipal;
 import com.academy.project.demo.service.UserService;
@@ -31,5 +33,11 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public UserSummary updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
         return userService.update(userUpdateRequest);
+    }
+
+    @PutMapping("/changePassword")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public JwtAuthenticationResponse changePassword(@RequestBody LoginRequest loginRequest) {
+        return userService.changePassword(loginRequest);
     }
 }

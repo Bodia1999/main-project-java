@@ -1,14 +1,21 @@
 package com.academy.project.demo.service;
 
 import com.academy.project.demo.dto.UserSummary;
+import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.UserUpdateRequest;
+import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.entity.User;
 import com.academy.project.demo.exception.WrongInputException;
 import com.academy.project.demo.repository.UserRepository;
 import com.academy.project.demo.security.CustomUserDetailsService;
+import com.academy.project.demo.security.JwtTokenProvider;
 import com.academy.project.demo.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +23,9 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     public UserSummary getCurrentUser(UserPrincipal userPrincipal) {
         return UserSummary.builder()
@@ -28,7 +38,7 @@ public class UserService {
                 .build();
     }
 
-    public UserSummary update (UserUpdateRequest userUpdateRequest){
+    public UserSummary update(UserUpdateRequest userUpdateRequest) {
         User user = userRepository
                 .findById(userUpdateRequest.getId())
                 .orElseThrow(() -> new WrongInputException("User with id = " + userUpdateRequest.getId() + " " +
@@ -56,5 +66,25 @@ public class UserService {
                 .name(userPrincipal.getName()).role(userPrincipal.getAuthorities().toString())
                 .card(userPrincipal.getCreditCardResponses())
                 .build();
+    }
+
+    public JwtAuthenticationResponse changePassword(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new WrongInputException("There is no such user with " + loginRequest.getEmail() + " email!"));
+        boolean matches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+        if (!matches) {
+            throw new WrongInputException("Passwords do not match");
+        } else {
+            user.setPassword(passwordEncoder.encode(loginRequest.getNewPassword()));
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getNewPassword()
+                )
+        );
+        String jwt = tokenProvider.generateToken(authentication);
+        return  new JwtAuthenticationResponse(jwt);
     }
 }
