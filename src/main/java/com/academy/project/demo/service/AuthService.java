@@ -72,7 +72,8 @@ public class AuthService {
                 signUpRequest.getSurname(),
                 signUpRequest.getEmail(),
                 signUpRequest.getPassword(),
-                signUpRequest.getPhoneNumber());
+                signUpRequest.getPhoneNumber(),
+                signUpRequest.getStripeCustomerId());
 
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 

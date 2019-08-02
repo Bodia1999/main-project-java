@@ -54,6 +54,8 @@ public class User {
     @Size(min = 4, max = 100)
     private String password;
 
+    private String stripeCustomerId;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -67,12 +69,14 @@ public class User {
                 @NotBlank @Size(min = 4, max = 100) String surname,
                 @NotBlank @Size(max = 40) @Email String email,
                 @NotBlank @Size(max = 100) String password ,
-                String phoneNumber) {
+                String phoneNumber,
+                String stripeCustomerId) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
+        this.stripeCustomerId = stripeCustomerId;
     }
 
 

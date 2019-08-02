@@ -19,6 +19,7 @@ public class UserSummary {
     private String surname;
     private String phoneNumber;
     private String email;
+    private String stripeCustomerId;
     private String role;
     private List<CreditCardResponse> card;
 }

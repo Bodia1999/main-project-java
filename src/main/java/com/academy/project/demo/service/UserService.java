@@ -56,6 +56,10 @@ public class UserService {
         if (userUpdateRequest.getPhoneNumber() != null) {
             user.setPhoneNumber(userUpdateRequest.getPhoneNumber());
         }
+
+        if (userUpdateRequest.getStripeCustomerId() != null) {
+            user.setStripeCustomerId(userUpdateRequest.getStripeCustomerId());
+        }
         User save = userRepository.save(user);
         UserPrincipal userPrincipal = UserPrincipal.create(save);
         return UserSummary.builder()
@@ -63,6 +67,7 @@ public class UserService {
                 .email(userPrincipal.getEmail())
                 .surname(userPrincipal.getSurname())
                 .phoneNumber(userPrincipal.getPhoneNumber())
+                .stripeCustomerId(userPrincipal.getStripeCustomerId())
                 .name(userPrincipal.getName()).role(userPrincipal.getAuthorities().toString())
                 .card(userPrincipal.getCreditCardResponses())
                 .build();

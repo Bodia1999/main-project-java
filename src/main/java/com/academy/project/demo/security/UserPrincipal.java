@@ -27,6 +27,8 @@ public class UserPrincipal implements UserDetails {
 
     private String phoneNumber;
 
+    private String stripeCustomerId;
+
 //    private List<CreditCardResponse> creditCards;
 
     @JsonIgnore
@@ -39,13 +41,14 @@ public class UserPrincipal implements UserDetails {
 
     private List<CreditCardResponse> creditCardResponses;
 
-    public UserPrincipal(Long id, String name, String surname, String phoneNumber, String email, List<CreditCard> creditCard, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String name, String surname, String phoneNumber, String email, List<CreditCard> creditCard, String password, String stripeCustomerId,Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.password = password;
+        this.stripeCustomerId = stripeCustomerId;
         this.creditCardResponses = creditCard.stream().map(CreditCardResponse::new).collect(Collectors.toList());
         this.authorities = authorities;
     }
@@ -63,6 +66,7 @@ public class UserPrincipal implements UserDetails {
                 user.getEmail(),
                 user.getCreditCard(),
                 user.getPassword(),
+                user.getStripeCustomerId(),
                 authorities
         );
     }
@@ -85,6 +89,10 @@ public class UserPrincipal implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
     }
 
     @Override

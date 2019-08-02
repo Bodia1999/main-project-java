@@ -24,6 +24,7 @@ public class UserUpdateRequest {
     //    @NotBlank
 //    @Size(max = 40)
     private String phoneNumber;
+    private String stripeCustomerId;
     @Email
     private String email;
 

@@ -20,6 +20,8 @@ public class SignUpRequest {
 
     private String phoneNumber;
 
+    private String stripeCustomerId;
+
     @NotBlank
     @Size(max = 40)
     @Email
