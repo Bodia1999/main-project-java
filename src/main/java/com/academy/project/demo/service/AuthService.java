@@ -1,6 +1,8 @@
 package com.academy.project.demo.service;
 
 
+import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
+import com.academy.project.demo.dto.request.CustomerToStripeRequest;
 import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.SignUpRequest;
@@ -13,6 +15,7 @@ import com.academy.project.demo.repository.RoleRepository;
 import com.academy.project.demo.repository.UserRepository;
 import com.academy.project.demo.security.JwtTokenProvider;
 import com.academy.project.demo.security.UserPrincipal;
+import com.stripe.exception.StripeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,14 +36,16 @@ public class AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JwtTokenProvider tokenProvider;
+    private StripeChargesService stripeChargesService;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, StripeChargesService stripeChargesService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
+        this.stripeChargesService = stripeChargesService;
     }
 
     public JwtAuthenticationResponse authenticateUser(LoginRequest loginRequest) {
@@ -54,26 +59,28 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-
-
+        
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         log.info("User with [email: {}] has logged in", userPrincipal.getEmail());
         return new JwtAuthenticationResponse(jwt);
     }
 
-    public Long registerUser(SignUpRequest signUpRequest) {
+    public Long registerUser(SignUpRequest signUpRequest) throws StripeException {
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new ConflictException("Email [email: " + signUpRequest.getEmail() + "] is already taken");
         }
+
+        String stripeCustomerId = stripeChargesService
+                .createCustomer(CustomerToStripeRequest.builder().email(signUpRequest.getEmail()).build());
 
         User user = new User(signUpRequest.getName(),
                 signUpRequest.getSurname(),
                 signUpRequest.getEmail(),
                 signUpRequest.getPassword(),
                 signUpRequest.getPhoneNumber(),
-                signUpRequest.getStripeCustomerId());
+                stripeCustomerId);
 
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 

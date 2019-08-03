@@ -13,12 +13,13 @@ import lombok.Setter;
 public class CreditCardResponse {
 
     private Long id;
-    private String token;
+//    private String token;
     private String nameOfCard;
-
+    private String stripeCardId;
     public CreditCardResponse(CreditCard creditCard){
         this.id = creditCard.getId();
-        this.token = creditCard.getToken();
+//        this.token = creditCard.getToken();
         this.nameOfCard = creditCard.getNameOfCard();
+        this.stripeCardId = creditCard.getStripeCardId();
     }
 }

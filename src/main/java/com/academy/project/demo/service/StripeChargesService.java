@@ -32,8 +32,9 @@ public class StripeChargesService {
         return newCustomer.getId();
     }
 
-    public String addCreditCardToCustomer(CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException {
+    public String addCreditCardToCustomer(CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, CloneNotSupportedException {
         Customer customer = retrieveCustomer(creditCardToStripeRequest.getCustomerStripeId());
+//        PaymentSourceCollection externalAccountCollection = customer.getSources();
         Map<String, Object> tokenParams = new HashMap<>();
         Map<String, Object> cardParams = new HashMap<>();
         cardParams.put("name", creditCardToStripeRequest.getName());
@@ -44,16 +45,29 @@ public class StripeChargesService {
         tokenParams.put("card", cardParams);
 
         Token token = Token.create(tokenParams);
+
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        stringObjectMap.put("object", "card");
+        PaymentSourceCollection list = customer.getSources().list(stringObjectMap);
+
+        for (int i = 0; i < list.getData().size(); i++) {
+           Card card = (Card) list.getData().get(i);
+           if (card.getFingerprint().equals(token.getCard().getFingerprint())){
+               throw new CloneNotSupportedException("Card already exists! Try again with another card");
+           }
+        }
+
+
         Map<String, Object> source = new HashMap<>();
         source.put("source", token.getId());
 
         PaymentSource paymentSource = customer.getSources().create(source);
 
-        return new GsonBuilder().create().toJson(paymentSource);
+        return paymentSource.getId();
     }
 
     public String charge(ChargeRequest chargeRequest) throws StripeException {
-        Customer customer = retrieveCustomer("cus_FY6BuBS2GL05V3");
+        Customer customer = retrieveCustomer(chargeRequest.getCustomerStripeId());
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("amount", chargeRequest.getAmount());
         chargeParams.put("currency", chargeRequest.getCurrency());
@@ -69,6 +83,12 @@ public class StripeChargesService {
 
     private Customer retrieveCustomer(String cusId) throws StripeException {
         return Customer.retrieve(cusId);
+    }
+
+    public void deleteCardStripe(String customerId, String cardId) throws StripeException {
+        Customer customer = retrieveCustomer(customerId);
+        Card card = (Card) customer.getSources().retrieve(cardId);
+        card.delete();
     }
 
 

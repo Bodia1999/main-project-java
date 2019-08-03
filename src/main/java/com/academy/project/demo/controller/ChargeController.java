@@ -47,7 +47,7 @@ public class ChargeController {
 
     @PostMapping("/addCard")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public String addCard(@RequestBody CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException {
+    public String addCard(@RequestBody CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, CloneNotSupportedException {
         return paymentsService.addCreditCardToCustomer(creditCardToStripeRequest);
     }
 

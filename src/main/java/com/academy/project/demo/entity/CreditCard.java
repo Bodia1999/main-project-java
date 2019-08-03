@@ -16,14 +16,11 @@ public class CreditCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String token;
+//    private String token;
     private String nameOfCard;
+    private String stripeCardId;
 
     @ManyToOne
     private User user;
 
-    public CreditCard (Long id, String token){
-        this.id = id;
-        this.token = token;
-    }
 }

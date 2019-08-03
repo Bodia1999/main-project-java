@@ -32,7 +32,8 @@ public class UserService {
                 .id(userPrincipal.getId())
                 .email(userPrincipal.getEmail())
                 .surname(userPrincipal.getSurname())
-                .phoneNumber(userPrincipal.getPhoneNumber())
+                .phoneNumber(userPrincipal.getPhoneNumber()).
+                stripeCustomerId(userPrincipal.getStripeCustomerId())
                 .name(userPrincipal.getName()).role(userPrincipal.getAuthorities().toString())
                 .card(userPrincipal.getCreditCardResponses())
                 .build();

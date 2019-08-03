@@ -7,7 +7,8 @@ import lombok.Setter;
 @Setter
 public class CreditCardRequest {
     private Long userId;
-    private String token;
+//    private String token;
     private String nameOfCard;
+    private String stripeCardId;
 }
 

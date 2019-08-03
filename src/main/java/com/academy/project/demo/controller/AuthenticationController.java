@@ -4,6 +4,7 @@ import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.SignUpRequest;
 import com.academy.project.demo.service.AuthService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     @ResponseStatus(OK)
-    public Long register(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public Long register(@Valid @RequestBody SignUpRequest signUpRequest) throws StripeException {
         return authService.registerUser(signUpRequest);
     }
 }

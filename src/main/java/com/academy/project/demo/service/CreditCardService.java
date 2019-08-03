@@ -5,6 +5,7 @@ import com.academy.project.demo.entity.CreditCard;
 import com.academy.project.demo.exception.WrongInputException;
 import com.academy.project.demo.repository.CreditCardRepository;
 import com.academy.project.demo.security.CustomUserDetailsService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,10 @@ public class CreditCardService {
 
     private final CreditCardRepository creditCardRepository;
     private final CustomUserDetailsService customUserDetailsService;
+    private final StripeChargesService stripeChargesService;
 
     public CreditCard getOne(Long id) {
-        return creditCardRepository.findById(id).orElseThrow(() -> new WrongInputException("There is no such credit card with " + id + "id"));
+        return creditCardRepository.findById(id).orElseThrow(() -> new WrongInputException("There is no such credit card with " + id + " id"));
     }
 
     public CreditCard save(CreditCardRequest cardRequest) {
@@ -38,13 +40,16 @@ public class CreditCardService {
         if (creditCard == null) {
             creditCard = new CreditCard();
         }
-        creditCard.setToken(cardRequest.getToken());
+//        creditCard.setToken(cardRequest.getToken());
         creditCard.setNameOfCard(cardRequest.getNameOfCard());
+        creditCard.setStripeCardId(cardRequest.getStripeCardId());
         creditCard.setUser(customUserDetailsService.loadUserById(cardRequest.getUserId()));
         return creditCard;
     }
 
-    public void delete(Long id) {
+    public void delete( String customerId, Long id) throws StripeException {
+        CreditCard one = getOne(id);
+        stripeChargesService.deleteCardStripe(customerId, one.getStripeCardId());
         creditCardRepository.delete(getOne(id));
     }
 }

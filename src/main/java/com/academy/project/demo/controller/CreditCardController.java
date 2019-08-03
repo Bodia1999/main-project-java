@@ -3,6 +3,7 @@ package com.academy.project.demo.controller;
 import com.academy.project.demo.dto.request.CreditCardRequest;
 import com.academy.project.demo.dto.response.CreditCardResponse;
 import com.academy.project.demo.service.CreditCardService;
+import com.stripe.exception.StripeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,10 +44,10 @@ public class CreditCardController {
         return new CreditCardResponse(creditCardService.update(id, cardRequest));
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}/{customerId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public void delete(@PathVariable Long id) {
-        creditCardService.delete(id);
+    public void delete(@PathVariable Long id, @PathVariable String customerId) throws StripeException {
+        creditCardService.delete(customerId,id);
     }
 
 }
