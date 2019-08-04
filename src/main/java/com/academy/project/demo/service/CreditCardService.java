@@ -1,6 +1,7 @@
 package com.academy.project.demo.service;
 
 import com.academy.project.demo.dto.request.CreditCardRequest;
+import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
 import com.academy.project.demo.entity.CreditCard;
 import com.academy.project.demo.exception.WrongInputException;
 import com.academy.project.demo.repository.CreditCardRepository;
@@ -24,8 +25,10 @@ public class CreditCardService {
         return creditCardRepository.findById(id).orElseThrow(() -> new WrongInputException("There is no such credit card with " + id + " id"));
     }
 
-    public CreditCard save(CreditCardRequest cardRequest) {
-        return creditCardRepository.save(creditCardToRequest(null, cardRequest));
+    public CreditCard save(Long userId, CreditCardToStripeRequest creditCardToStripeRequest) throws Exception {
+        String cardId = stripeChargesService.addCreditCardToCustomer(creditCardToStripeRequest);
+        CreditCardRequest creditCardRequest = new CreditCardRequest(userId, creditCardToStripeRequest.getNameOfCreditCard(), cardId );
+        return creditCardRepository.save(creditCardToRequest(null, creditCardRequest));
     }
 
     public List<CreditCard> getAll() {

@@ -6,12 +6,15 @@ import com.academy.project.demo.dto.request.CustomerToStripeRequest;
 import com.academy.project.demo.service.StripeChargesService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Charge;
+import com.stripe.model.PaymentSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -34,9 +37,9 @@ public class ChargeController {
 //    }
 
     @ExceptionHandler(StripeException.class)
-    public String handleError(Model model, StripeException ex) {
+    public void handleError(Model model, StripeException ex) throws Exception {
         model.addAttribute("error", ex.getMessage());
-        return "result";
+        throw new Exception("error: " + ex.getMessage() + " code:"+ ex.getStatusCode());
     }
 
     @PostMapping("/customers")
@@ -47,7 +50,7 @@ public class ChargeController {
 
     @PostMapping("/addCard")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public String addCard(@RequestBody CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, CloneNotSupportedException {
+    public String addCard(@RequestBody CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, Exception {
         return paymentsService.addCreditCardToCustomer(creditCardToStripeRequest);
     }
 
@@ -55,6 +58,12 @@ public class ChargeController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public String charge(@RequestBody ChargeRequest chargeRequest) throws StripeException {
         return paymentsService.charge(chargeRequest);
+    }
+
+    @GetMapping("/getAllCardsByCustomer/{customerId}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public List<PaymentSource> getAllCardsByCustomer(@PathVariable String customerId) throws StripeException {
+        return paymentsService.getAllCardByUser(customerId);
     }
 
 

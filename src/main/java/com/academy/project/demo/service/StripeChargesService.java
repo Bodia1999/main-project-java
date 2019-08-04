@@ -3,6 +3,7 @@ package com.academy.project.demo.service;
 import com.academy.project.demo.dto.request.ChargeRequest;
 import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
 import com.academy.project.demo.dto.request.CustomerToStripeRequest;
+import com.academy.project.demo.exception.BadRequestException;
 import com.google.gson.GsonBuilder;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -32,9 +34,8 @@ public class StripeChargesService {
         return newCustomer.getId();
     }
 
-    public String addCreditCardToCustomer(CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, CloneNotSupportedException {
+    public String addCreditCardToCustomer(CreditCardToStripeRequest creditCardToStripeRequest) throws Exception {
         Customer customer = retrieveCustomer(creditCardToStripeRequest.getCustomerStripeId());
-//        PaymentSourceCollection externalAccountCollection = customer.getSources();
         Map<String, Object> tokenParams = new HashMap<>();
         Map<String, Object> cardParams = new HashMap<>();
         cardParams.put("name", creditCardToStripeRequest.getName());
@@ -46,15 +47,14 @@ public class StripeChargesService {
 
         Token token = Token.create(tokenParams);
 
-        Map<String, Object> stringObjectMap = new HashMap<>();
-        stringObjectMap.put("object", "card");
-        PaymentSourceCollection list = customer.getSources().list(stringObjectMap);
+        List<PaymentSource> allCardByUser = getAllCardByUser(creditCardToStripeRequest.getCustomerStripeId());
 
-        for (int i = 0; i < list.getData().size(); i++) {
-           Card card = (Card) list.getData().get(i);
-           if (card.getFingerprint().equals(token.getCard().getFingerprint())){
-               throw new CloneNotSupportedException("Card already exists! Try again with another card");
-           }
+
+        for (PaymentSource paymentSource1 : allCardByUser) {
+            Card card = (Card) paymentSource1;
+            if (card.getFingerprint().equals(token.getCard().getFingerprint())){
+                throw new BadRequestException("Card already exists! Try again with another card");
+            }
         }
 
 
@@ -89,6 +89,14 @@ public class StripeChargesService {
         Customer customer = retrieveCustomer(customerId);
         Card card = (Card) customer.getSources().retrieve(cardId);
         card.delete();
+    }
+
+    public List<PaymentSource> getAllCardByUser (String customerId) throws StripeException {
+        Customer customer = retrieveCustomer(customerId);
+        Map<String, Object> stringObjectMap = new HashMap<>();
+        stringObjectMap.put("object", "card");
+        PaymentSourceCollection list = customer.getSources().list(stringObjectMap);
+        return list.getData();
     }
 
 

@@ -4,6 +4,7 @@ import com.academy.project.demo.dto.response.ErrorResponse;
 import com.academy.project.demo.exception.BadRequestException;
 import com.academy.project.demo.exception.ConflictException;
 import com.academy.project.demo.exception.NotFoundException;
+import com.academy.project.demo.exception.WrongInputException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({BadRequestException.class, NoSuchFieldException.class, NumberFormatException.class, JsonProcessingException.class, IllegalArgumentException.class, PropertyReferenceException.class})
+    @ExceptionHandler({BadRequestException.class, WrongInputException.class, NoSuchFieldException.class, NumberFormatException.class, JsonProcessingException.class, IllegalArgumentException.class, PropertyReferenceException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse runtime(RuntimeException exception) {
         log.info(exception.getMessage());
