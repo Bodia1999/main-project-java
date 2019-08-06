@@ -4,6 +4,7 @@ import com.academy.project.demo.dto.request.ChargeRequest;
 import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
 import com.academy.project.demo.dto.request.CustomerToStripeRequest;
 import com.academy.project.demo.exception.BadRequestException;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +54,7 @@ public class StripeChargesService {
 
         for (PaymentSource paymentSource1 : allCardByUser) {
             Card card = (Card) paymentSource1;
-            if (card.getFingerprint().equals(token.getCard().getFingerprint())){
+            if (card.getFingerprint().equals(token.getCard().getFingerprint())) {
                 throw new BadRequestException("Card already exists! Try again with another card");
             }
         }
@@ -68,7 +70,7 @@ public class StripeChargesService {
 
     public String charge(ChargeRequest chargeRequest) throws StripeException {
         Customer customer = retrieveCustomer(chargeRequest.getCustomerStripeId());
-        Map<String, Object> chargeParams = new HashMap<String, Object>();
+        Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", chargeRequest.getAmount());
         chargeParams.put("currency", chargeRequest.getCurrency());
         chargeParams.put("customer", customer.getId());
@@ -81,6 +83,8 @@ public class StripeChargesService {
         return new GsonBuilder().setPrettyPrinting().create().toJson(charge);
     }
 
+
+
     private Customer retrieveCustomer(String cusId) throws StripeException {
         return Customer.retrieve(cusId);
     }
@@ -91,12 +95,20 @@ public class StripeChargesService {
         card.delete();
     }
 
-    public List<PaymentSource> getAllCardByUser (String customerId) throws StripeException {
+    public List<PaymentSource> getAllCardByUser(String customerId) throws StripeException {
         Customer customer = retrieveCustomer(customerId);
         Map<String, Object> stringObjectMap = new HashMap<>();
         stringObjectMap.put("object", "card");
         PaymentSourceCollection list = customer.getSources().list(stringObjectMap);
         return list.getData();
+    }
+
+    public String getCardById(String customerId, String cardId) throws StripeException{
+        Customer customer = retrieveCustomer(customerId);
+        Gson gson =new Gson();
+        String s = gson.toJson(customer.getSources().retrieve(cardId));
+        return s;
+
     }
 
 

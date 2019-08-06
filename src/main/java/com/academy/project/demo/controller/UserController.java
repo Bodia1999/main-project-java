@@ -8,6 +8,9 @@ import com.academy.project.demo.security.CurrentUser;
 import com.academy.project.demo.security.UserPrincipal;
 import com.academy.project.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +28,19 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        return userService.getCurrentUser(currentUser);
+    public HttpEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        return new ResponseEntity<>(userService.getCurrentUser(currentUser), HttpStatus.OK);
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public UserSummary updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
-        return userService.update(userUpdateRequest);
+    public HttpEntity<UserSummary> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return new ResponseEntity<>(userService.update(userUpdateRequest), HttpStatus.OK);
     }
 
     @PutMapping("/changePassword")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public JwtAuthenticationResponse changePassword(@RequestBody LoginRequest loginRequest) {
-        return userService.changePassword(loginRequest);
+    public HttpEntity<JwtAuthenticationResponse> changePassword(@RequestBody LoginRequest loginRequest) {
+        return new ResponseEntity<>(userService.changePassword(loginRequest), HttpStatus.OK);
     }
 }
