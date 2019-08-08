@@ -1,9 +1,12 @@
-package com.academy.project.demo.dto.response.ticket;
+package com.academy.project.demo.dto.response.ticket.evolution.tickets;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -49,5 +52,8 @@ public class TicketGroupResponse {
     @SerializedName("event")
     @Expose
     public TicketEventResponse event;
+    @SerializedName("ticket_list")
+    @Expose
+    public List<TicketListResponse> ticketList = new ArrayList<>();
 
 }

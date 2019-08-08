@@ -5,25 +5,39 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "creditCard", indexes = {
-        @Index(name = "stripeCardIdIndex", columnList = "stripeCardId", unique = true)
-})
+@Table(name = "_order")
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreditCard {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    private String token;
-    private String nameOfCard;
-    @Column(name = "stripeCardId")
-    private String stripeCardId;
+
+    @Column
+    private String stripeChargeId;
+
+    @Column
+    private String amount;
+
+    @Column
+    private String ticketEvolutionId;
+
+    @Column
+    private Boolean ifRefunded;
+
+    @Column
+    private Date createdAt;
+
+    @Column
+    private Date updatedAt;
 
     @ManyToOne
     private User user;
+
 
 }

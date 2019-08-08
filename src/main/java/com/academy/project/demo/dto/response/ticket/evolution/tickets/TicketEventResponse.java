@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.response.ticket;
+package com.academy.project.demo.dto.response.ticket.evolution.tickets;
 
 import com.fasterxml.jackson.annotation.*;
 import com.google.gson.annotations.Expose;

@@ -1,25 +1,30 @@
 package com.academy.project.demo.service;
 
-import com.academy.project.demo.dto.request.ChargeRequest;
-import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
-import com.academy.project.demo.dto.request.CustomerToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.ChargeRequest;
+import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
+import com.academy.project.demo.dto.request.OrderRequest;
+import com.academy.project.demo.entity.Order;
 import com.academy.project.demo.exception.BadRequestException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class StripeChargesService {
+    private final OrderService orderService;
     @Value("${stripe.secret.key}")
     private String stripeKey;
 
@@ -68,7 +73,7 @@ public class StripeChargesService {
         return paymentSource.getId();
     }
 
-    public String charge(ChargeRequest chargeRequest) throws StripeException {
+    public String charge(ChargeRequest chargeRequest) throws Exception {
         Customer customer = retrieveCustomer(chargeRequest.getCustomerStripeId());
         Map<String, Object> chargeParams = new HashMap<>();
         chargeParams.put("amount", chargeRequest.getAmount());
@@ -79,6 +84,13 @@ public class StripeChargesService {
         }
 
         Charge charge = Charge.create(chargeParams);
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setStripeChargeId(charge.getId());
+        orderRequest.setUserId(chargeRequest.getUserId());
+        Double amount = charge.getAmount()/100d;
+        System.out.println(amount);
+        orderRequest.setAmount(String.valueOf(amount));
+        orderService.save(orderRequest);
 
         return new GsonBuilder().setPrettyPrinting().create().toJson(charge);
     }
@@ -109,6 +121,26 @@ public class StripeChargesService {
         String s = gson.toJson(customer.getSources().retrieve(cardId));
         return s;
 
+    }
+
+    public String refundMoney() throws StripeException {
+        Map<String, Object> refundParams = new HashMap<>();
+        refundParams.put("charge", "ch_1F4qiaIL86epBHHqnh0a4Y1U");
+
+        Refund refund = Refund.create(refundParams);
+
+        if (refund.getStatus().equals("succeeded")) {
+            Order order = orderService.findByStripeChargeId("ch_1F4qiaIL86epBHHqnh0a4Y1U");
+            new OrderRequest();
+            OrderRequest orderRequest = OrderRequest
+                    .builder()
+                    .stripeChargeId(order.getStripeChargeId())
+                    .ifRefunded(true)
+                    .ticketEvolutionId(order.getTicketEvolutionId())
+                    .build();
+            orderService.update(null, order,orderRequest );
+        }
+        return refund.toJson();
     }
 
 

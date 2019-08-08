@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request;
+package com.academy.project.demo.dto.request.stripe;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,5 +12,6 @@ public class ChargeRequest {
     }
     private Currency currency;
     private String customerStripeId;
+    private Long userId;
     private String source;
 }

@@ -65,6 +65,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<CreditCard> creditCard;
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
     public User(@NotBlank @Size(max = 40) String name,
                 @NotBlank @Size(min = 4, max = 100) String surname,
                 @NotBlank @Size(max = 40) @Email String email,

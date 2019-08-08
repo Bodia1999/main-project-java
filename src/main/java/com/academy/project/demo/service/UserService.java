@@ -36,6 +36,7 @@ public class UserService {
                 stripeCustomerId(userPrincipal.getStripeCustomerId())
                 .name(userPrincipal.getName()).role(userPrincipal.getAuthorities().toString())
                 .card(userPrincipal.getCreditCardResponses())
+                .orderResponses(userPrincipal.getOrderResponses())
                 .build();
     }
 
@@ -71,6 +72,7 @@ public class UserService {
                 .stripeCustomerId(userPrincipal.getStripeCustomerId())
                 .name(userPrincipal.getName()).role(userPrincipal.getAuthorities().toString())
                 .card(userPrincipal.getCreditCardResponses())
+                .orderResponses(userPrincipal.getOrderResponses())
                 .build();
     }
 

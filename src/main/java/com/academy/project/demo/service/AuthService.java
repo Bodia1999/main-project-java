@@ -1,8 +1,7 @@
 package com.academy.project.demo.service;
 
 
-import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
-import com.academy.project.demo.dto.request.CustomerToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
 import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.SignUpRequest;

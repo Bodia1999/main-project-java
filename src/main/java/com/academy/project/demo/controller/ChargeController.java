@@ -1,12 +1,10 @@
 package com.academy.project.demo.controller;
 
-import com.academy.project.demo.dto.request.ChargeRequest;
-import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
-import com.academy.project.demo.dto.request.CustomerToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.ChargeRequest;
+import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
 import com.academy.project.demo.service.StripeChargesService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.Card;
-import com.stripe.model.Charge;
 import com.stripe.model.PaymentSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class ChargeController {
 
     @PostMapping("/charge")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<String> charge(@RequestBody ChargeRequest chargeRequest) throws StripeException {
+    public HttpEntity<String> charge(@RequestBody ChargeRequest chargeRequest) throws Exception {
         return new ResponseEntity<>(paymentsService.charge(chargeRequest), HttpStatus.OK);
     }
 
@@ -66,6 +64,13 @@ public class ChargeController {
     public HttpEntity<String> getOneCardByUser(@PathVariable String customerId, @PathVariable String cardId) throws StripeException {
         return new ResponseEntity<>(paymentsService.getCardById(customerId, cardId), HttpStatus.OK);
     }
+
+    @PostMapping("/refundMoney")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public HttpEntity<String> refundMoney() throws StripeException {
+        return new ResponseEntity<>(paymentsService.refundMoney(), HttpStatus.OK);
+    }
+
 
 
 }

@@ -1,7 +1,7 @@
 package com.academy.project.demo.controller;
 
 import com.academy.project.demo.dto.request.CreditCardRequest;
-import com.academy.project.demo.dto.request.CreditCardToStripeRequest;
+import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
 import com.academy.project.demo.dto.response.CreditCardResponse;
 import com.academy.project.demo.service.CreditCardService;
 import com.stripe.exception.StripeException;

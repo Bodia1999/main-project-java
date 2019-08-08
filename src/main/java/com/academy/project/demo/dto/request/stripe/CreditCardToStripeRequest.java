@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request;
+package com.academy.project.demo.dto.request.stripe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
