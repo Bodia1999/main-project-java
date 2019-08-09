@@ -11,6 +11,19 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class CreditCardToStripeRequest {
 
+
+    @NotBlank
+    private String firstName;
+    @NotBlank
+    private String lastName;
+    @NotBlank
+    private String address;
+    @NotBlank
+    private String country;
+    @NotBlank
+    private String city;
+    @NotBlank
+    private String zip;
     @NotBlank
     private String name;
     @NotBlank

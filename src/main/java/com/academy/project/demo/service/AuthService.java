@@ -72,7 +72,7 @@ public class AuthService {
         }
 
         String stripeCustomerId = stripeChargesService
-                .createCustomer(CustomerToStripeRequest.builder().email(signUpRequest.getEmail()).build());
+                .createCustomer(signUpRequest);
 
         User user = new User(signUpRequest.getName(),
                 signUpRequest.getSurname(),

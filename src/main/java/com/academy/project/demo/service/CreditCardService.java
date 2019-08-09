@@ -52,7 +52,7 @@ public class CreditCardService {
 
     public void delete( String customerId, Long id) throws StripeException {
         CreditCard one = getOne(id);
-        stripeChargesService.deleteCardStripe(customerId, one.getStripeCardId());
+//        stripeChargesService.deleteCardStripe(customerId, one.getStripeCardId());
         creditCardRepository.delete(getOne(id));
     }
 }

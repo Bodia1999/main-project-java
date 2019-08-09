@@ -21,26 +21,32 @@ public class TicketEvolutionController {
 
     @PostMapping("/get")
 //    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public MainInfoTicketResponse get(@RequestBody TicketEvolutionRequest ticketEvolutionRequest) throws IOException {
+    public MainInfoTicketResponse get(@RequestBody TicketEvolutionRequest ticketEvolutionRequest) throws Exception {
         return ticketEvolutionService.getAllEventsByQuery(ticketEvolutionRequest);
     }
 
     @GetMapping("/getEvent/{eventId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public TicketResponse getInfoAboutEvent(@PathVariable String eventId) throws IOException {
+    public TicketResponse getInfoAboutEvent(@PathVariable String eventId) throws Exception {
         return ticketEvolutionService.getInfoAboutEvent(eventId);
     }
 
     @GetMapping("/getTickets/{ticketId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public TicketGroupResponse getInfoAboutTickets(@PathVariable String ticketId) throws IOException {
+    public TicketGroupResponse getInfoAboutTickets(@PathVariable String ticketId) throws Exception {
         return ticketEvolutionService.getInfoAboutTickets(ticketId);
     }
 
     @PostMapping("/createOrder")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public void createOrder() throws IOException {
+    public void createOrder() throws Exception {
         ticketEvolutionService.createOrder();
+    }
+
+    @PostMapping("/createCreditCard")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+    public String createCreditCard() throws Exception {
+       return ticketEvolutionService.createCreditCard();
     }
 
 

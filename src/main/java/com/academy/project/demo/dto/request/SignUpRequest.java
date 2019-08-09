@@ -1,5 +1,6 @@
 package com.academy.project.demo.dto.request;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
+@Builder
 public class SignUpRequest {
     @NotBlank
     @Size(min = 4, max = 40)

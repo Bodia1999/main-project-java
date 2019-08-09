@@ -1,9 +1,11 @@
 package com.academy.project.demo.controller;
 
+import com.academy.project.demo.dto.request.SignUpRequest;
 import com.academy.project.demo.dto.request.stripe.ChargeRequest;
 import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
 import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
 import com.academy.project.demo.service.StripeChargesService;
+import com.braintreegateway.CreditCard;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentSource;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +39,8 @@ public class ChargeController {
 
     @PostMapping("/customers")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<String> createCustomer(@RequestBody CustomerToStripeRequest customerToStripeRequest) throws StripeException {
-        return new ResponseEntity<>(paymentsService.createCustomer(customerToStripeRequest), HttpStatus.OK);
+    public HttpEntity<String> createCustomer(@RequestBody SignUpRequest signUpRequest) throws StripeException {
+        return new ResponseEntity<>(paymentsService.createCustomer(signUpRequest), HttpStatus.OK);
     }
 
     @PostMapping("/addCard")
@@ -55,7 +57,7 @@ public class ChargeController {
 
     @GetMapping("/getAllCardsByCustomer/{customerId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<List<PaymentSource>> getAllOrOneCardByUser(@PathVariable String customerId) throws StripeException {
+    public HttpEntity<List<CreditCard>> getAllOrOneCardByUser(@PathVariable String customerId) throws StripeException {
         return new ResponseEntity<>(paymentsService.getAllCardByUser(customerId), HttpStatus.OK);
     }
 
@@ -65,10 +67,10 @@ public class ChargeController {
         return new ResponseEntity<>(paymentsService.getCardById(customerId, cardId), HttpStatus.OK);
     }
 
-    @PostMapping("/refundMoney")
+    @PostMapping("/refundMoney/{transactionId}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<String> refundMoney() throws StripeException {
-        return new ResponseEntity<>(paymentsService.refundMoney(), HttpStatus.OK);
+    public HttpEntity<String> refundMoney(@PathVariable String transactionId) throws StripeException {
+        return new ResponseEntity<>(paymentsService.refundMoney(transactionId), HttpStatus.OK);
     }
 
 
