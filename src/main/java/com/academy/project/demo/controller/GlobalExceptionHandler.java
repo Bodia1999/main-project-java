@@ -40,10 +40,10 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(HttpStatus.CONFLICT.value(), conflictException.getMessage());
     }
 
-//    @ExceptionHandler(HttpClientErrorException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public ErrorResponse httpClientErrorHandler(HttpClientErrorException httpClientErrorException) {
-//        log.info(httpClientErrorException.getMessage());
-//        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), httpClientErrorException.getMessage());
-//    }
+    @ExceptionHandler(HttpClientErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse httpClientErrorHandler(HttpClientErrorException httpClientErrorException) {
+        log.info(httpClientErrorException.getMessage());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), httpClientErrorException.getMessage());
+    }
 }

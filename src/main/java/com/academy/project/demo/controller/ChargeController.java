@@ -1,13 +1,11 @@
 package com.academy.project.demo.controller;
 
 import com.academy.project.demo.dto.request.SignUpRequest;
-import com.academy.project.demo.dto.request.stripe.ChargeRequest;
-import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
-import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
-import com.academy.project.demo.service.StripeChargesService;
+import com.academy.project.demo.dto.request.braintree.ChargeRequest;
+import com.academy.project.demo.dto.request.braintree.CreditCardToBrainTreeRequest;
+import com.academy.project.demo.service.BrainTreeChargesService;
 import com.braintreegateway.CreditCard;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +25,7 @@ import java.util.List;
 public class ChargeController {
 
 
-    private final StripeChargesService paymentsService;
+    private final BrainTreeChargesService paymentsService;
     @Value("${stripe.secret.key}")
     private String stripeKey;
 
@@ -45,14 +43,14 @@ public class ChargeController {
 
     @PostMapping("/addCard")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<String> addCard(@RequestBody CreditCardToStripeRequest creditCardToStripeRequest) throws StripeException, Exception {
-        return new ResponseEntity<>(paymentsService.addCreditCardToCustomer(creditCardToStripeRequest),HttpStatus.OK);
+    public HttpEntity<String> addCard(@RequestBody CreditCardToBrainTreeRequest creditCardToBrainTreeRequest) throws StripeException, Exception {
+        return new ResponseEntity<>(paymentsService.addCreditCardToCustomer(creditCardToBrainTreeRequest),HttpStatus.OK);
     }
 
-    @PostMapping("/charge")
+    @PostMapping("/charge/{ticketId}/{quantity}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<String> charge(@RequestBody ChargeRequest chargeRequest) throws Exception {
-        return new ResponseEntity<>(paymentsService.charge(chargeRequest), HttpStatus.OK);
+    public HttpEntity<String> charge(@RequestBody ChargeRequest chargeRequest, @PathVariable String ticketId, @PathVariable Integer quantity) throws Exception {
+        return new ResponseEntity<>(paymentsService.charge(chargeRequest, ticketId, quantity), HttpStatus.OK);
     }
 
     @GetMapping("/getAllCardsByCustomer/{customerId}")

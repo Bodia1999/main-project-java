@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request.stripe;
+package com.academy.project.demo.dto.request.braintree;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @AllArgsConstructor
-public class CreditCardToStripeRequest {
+public class CreditCardToBrainTreeRequest {
 
 
     @NotBlank

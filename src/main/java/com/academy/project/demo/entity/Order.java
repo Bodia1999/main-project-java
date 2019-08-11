@@ -36,6 +36,19 @@ public class Order {
     @Column
     private Date updatedAt;
 
+    @Column
+    private String typeOfEvents;
+
+    @Column(name = "_row")
+    private String row;
+    @Column
+    private String section;
+    @Column
+    private String occursAt;
+    @Column
+    private Integer quantity;
+
+
     @ManyToOne
     private User user;
 

@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request.stripe;
+package com.academy.project.demo.dto.request.braintree;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @Builder
-public class CustomerToStripeRequest {
+public class CustomerToBrainTreeRequest {
     @NotBlank
     private String email;
 }

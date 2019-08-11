@@ -26,7 +26,7 @@ public class TicketEvolutionController {
     }
 
     @GetMapping("/getEvent/{eventId}")
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
+//    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public TicketResponse getInfoAboutEvent(@PathVariable String eventId) throws Exception {
         return ticketEvolutionService.getInfoAboutEvent(eventId);
     }

@@ -1,7 +1,6 @@
 package com.academy.project.demo.service;
 
 
-import com.academy.project.demo.dto.request.stripe.CustomerToStripeRequest;
 import com.academy.project.demo.dto.response.JwtAuthenticationResponse;
 import com.academy.project.demo.dto.request.LoginRequest;
 import com.academy.project.demo.dto.request.SignUpRequest;
@@ -35,16 +34,16 @@ public class AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JwtTokenProvider tokenProvider;
-    private StripeChargesService stripeChargesService;
+    private BrainTreeChargesService brainTreeChargesService;
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, StripeChargesService stripeChargesService) {
+    public AuthService(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider, BrainTreeChargesService brainTreeChargesService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
-        this.stripeChargesService = stripeChargesService;
+        this.brainTreeChargesService = brainTreeChargesService;
     }
 
     public JwtAuthenticationResponse authenticateUser(LoginRequest loginRequest) {
@@ -71,7 +70,7 @@ public class AuthService {
             throw new ConflictException("Email [email: " + signUpRequest.getEmail() + "] is already taken");
         }
 
-        String stripeCustomerId = stripeChargesService
+        String stripeCustomerId = brainTreeChargesService
                 .createCustomer(signUpRequest);
 
         User user = new User(signUpRequest.getName(),

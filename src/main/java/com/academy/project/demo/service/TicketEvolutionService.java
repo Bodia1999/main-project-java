@@ -5,12 +5,9 @@ import com.academy.project.demo.dto.request.ticket.evolution.orders.*;
 import com.academy.project.demo.dto.response.event.MainInfoTicketResponse;
 import com.academy.project.demo.dto.response.ticket.evolution.tickets.TicketGroupResponse;
 import com.academy.project.demo.dto.response.ticket.evolution.tickets.TicketResponse;
-import com.academy.project.demo.entity.Order;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.json.HTTP;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,19 +17,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class TicketEvolutionService {
     @Value("${ticket.evolution.token}")
     private String xToken;
 
-    @Value("${ticket.evolution.signature}")
-    private String xSignature;
+//    @Value("${ticket.evolution.signature}")
+//    private String xSignature;
 
     @Value("${ticket.evolution.secret.key}")
     private String secretKey;
@@ -82,7 +76,7 @@ public class TicketEvolutionService {
         UriComponents uriComponents = UriComponentsBuilder
                 .fromHttpUrl(url + "/ticket_groups/" + ticketId)
                 .build();
-        String response = makeRequest(uriComponents,null, HttpMethod.GET);
+        String response = makeRequest(uriComponents, null, HttpMethod.GET);
         TicketGroupResponse ticketGroupResponse = gson.fromJson(response, TicketGroupResponse.class);
         TicketGroupResponse ticketGroupResponseModified = changePriceInTicketGroupResponse(ticketGroupResponse);
 
@@ -111,7 +105,7 @@ public class TicketEvolutionService {
         shippedItemRequest.setItems(itemRequests);
         shippedItemRequests.add(shippedItemRequest);
 
-        paymentRequest.setType("offline");
+        paymentRequest.setType("cash");
         paymentRequests.add(paymentRequest);
 
         orderRequest.setBuyerId(182066L);
@@ -132,22 +126,74 @@ public class TicketEvolutionService {
     }
 
     public String createCreditCard() throws Exception {
-        String newUrl = url + "/clients/182142/credit_cards";
+        String newUrl = url + "/orders";
         String body = "{\n" +
-                "  \"credit_cards\": [\n" +
+                "  \"orders\": [\n" +
                 "    {\n" +
-                "      \"label\": \"Chase Sapphire Reserve\",\n" +
-                "      \"name\": \"Ned Flanders\",\n" +
-                "      \"number\": \"2223000048400011\",\n" +
-                "      \"expiration_month\": \"12\",\n" +
-                "      \"expiration_year\": \"2021\",\n" +
-                "      \"verification_code\": \"789\",\n" +
-                "      \"address_id\": 661989,\n" +
-                "      \"phone_number_id\": 306540,\n" +
-                "      \"ip_address\": \"37.235.140.72\"\n" +
+                "      \"shipped_items\": [\n" +
+                "        {\n" +
+                "          \"items\": [\n" +
+                "            {\n" +
+                "              \"ticket_group_id\": 555611506,\n" +
+                "              \"quantity\": 1,\n" +
+                "              \"price\": 342\n" +
+                "            }\n" +
+                "          ],\n" +
+                "          \"type\": \"FedEx\",\n" +
+                "          \"service_type\": \"LEAST_EXPENSIVE\",\n" +
+                "          \"signature_type\": \"INDIRECT\",\n" +
+                "          \"residential\": true,\n" +
+                "          \"ship_to_company_name\": \"Leftorium\",\n" +
+                "          \"ship_to_name\": \"Ned Flanders\",\n" +
+                "          \"address_id\": 661989,\n" +
+                "          \"phone_number_id\": 306540\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"billing_address_id\": 661989,\n" +
+                "      \"payments\": [\n" +
+                "        {\n" +
+                "          \"type\": \"offline\",\n" +
+                "        }\n" +
+                "      ],\n" +
+                "      \"seller_id\": 1942,\n" +
+                "      \"client_id\": 103054,\n" +
+                "      \"created_by_ip_address\": \"12.34.56.78\",\n" +
+                "      \"service_fee\": 0,\n" +
+                "      \"shipping\": 0,\n" +
+                "      \"tax\": 0,\n" +
+                "      \"additional_expense\": 0,\n" +
+                "      \"discount\": 0,\n" +
+                "      \"seller_reference_number\": \"123456789\",\n" +
+                "      \"external_notes\": \"These notes will be visible to all parties\",\n" +
+                "      \"internal_notes\": \"These notes will be visible only to your office (1937)\"\n" +
                 "    }\n" +
                 "  ]\n" +
                 "}";
+
+//        String body = "{\n" +
+//                "  \"orders\": [\n" +
+//                "    {\n" +
+//                "      \"seller_id\": \"1942\",\n" +
+//                "      \"client_id\": \"103054\",\n" +
+//                "      \"payments\": [\n" +
+//                "        {\n" +
+//                "          \"type\": \"offline\"\n" +
+//                "        }\n" +
+//                "      ],\n" +
+//                "      \"shipped_items\": [\n" +
+//                "        {\n" +
+//                "          \"items\": [\n" +
+//                "            {\n" +
+//                "              \"ticket_group_id\": 555611506,\n" +
+//                "              \"quantity\": 1,\n" +
+//                "              \"price\": 342\n" +
+//                "            }\n" +
+//                "          ]\n" +
+//                "        }\n" +
+//                "      ]\n" +
+//                "    }\n" +
+//                "  ]\n" +
+//                "}";
 
 
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(newUrl).build();
@@ -156,37 +202,29 @@ public class TicketEvolutionService {
     }
 
 
-
+    private String makeRequest(UriComponents uriComponents, String body, HttpMethod method) throws Exception {
+        String modifiedLink = method.toString() + " " + uriComponents.toString().substring(8);
+        if (body != null) {
+            modifiedLink = modifiedLink.concat("?").concat(body);
+        }
+        HttpHeaders headers = createHttpHeaders(modifiedLink);
+        HttpEntity<String> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = createInstanceOfRestTemplate().exchange(uriComponents.toUriString(), method, entity, String.class);
+        System.out.println("Result - status (" + response.getStatusCode() + ") has body: " + response.hasBody());//        System.out.println(response.getBody());
+        return response.getBody();
+    }
 
     private HttpHeaders createHttpHeaders(String valueToEncode) throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         headers.set("X-Token", xToken);
         String encode = encode(secretKey, valueToEncode);
-//        System.out.println(encode);
         headers.set("X-Signature", encode);
         return headers;
     }
 
-    private String makeRequest(UriComponents uriComponents, String body, HttpMethod method) throws Exception {
-        String modifiedLink = method.toString() + " " + uriComponents.toString().substring(8);
-        if (body != null) {
-            modifiedLink = modifiedLink.concat("?").concat(body);
-        }
-//        System.out.println(modifiedLink);
-        HttpHeaders headers = createHttpHeaders(modifiedLink);
-        HttpEntity<String> entity = new HttpEntity<>(body, headers);
 
-        System.out.println(entity.getBody());
-        ResponseEntity<String> response = createInstance().exchange(uriComponents.toUriString(), method, entity, String.class);
-        System.out.println("Result - status (" + response.getStatusCode() + ") has body: " + response.hasBody());
-        System.out.println(response.getBody());
-        System.out.println(headers.toString());
-        return response.getBody();
-    }
-
-
-    private RestTemplate createInstance() {
+    private RestTemplate createInstanceOfRestTemplate() {
         return new RestTemplate();
     }
 
@@ -211,7 +249,7 @@ public class TicketEvolutionService {
         return ticketGroupResponse;
     }
 
-    private static String encode(String key, String data) throws Exception {
+    private String encode(String key, String data) throws Exception {
         Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
         SecretKeySpec secret_key = new SecretKeySpec(key.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secret_key);

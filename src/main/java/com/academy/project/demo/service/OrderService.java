@@ -1,10 +1,12 @@
 package com.academy.project.demo.service;
 
 import com.academy.project.demo.dto.request.OrderRequest;
+import com.academy.project.demo.dto.request.TicketRequest;
 import com.academy.project.demo.entity.Order;
 import com.academy.project.demo.exception.WrongInputException;
 import com.academy.project.demo.repository.OrderRepository;
 import com.academy.project.demo.security.CustomUserDetailsService;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,10 +56,15 @@ public class OrderService {
         } else {
             order.setUpdatedAt(new Date());
         }
-//        creditCard.setToken(cardRequest.getToken());
         order.setAmount(orderRequest.getAmount());
         order.setStripeChargeId(orderRequest.getStripeChargeId());
         order.setTicketEvolutionId(orderRequest.getTicketEvolutionId());
+        order.setRow(orderRequest.getRow());
+        order.setSection(orderRequest.getSection());
+        order.setIfRefunded(orderRequest.getIfRefunded());
+        order.setTypeOfEvents(orderRequest.getTypeOfEvents());
+        order.setQuantity(orderRequest.getQuantity());
+        order.setOccursAt(orderRequest.getOccursAt());
 
         order.setUser(customUserDetailsService.loadUserById(orderRequest.getUserId()));
         return order;

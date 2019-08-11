@@ -1,7 +1,7 @@
 package com.academy.project.demo.controller;
 
 import com.academy.project.demo.dto.request.CreditCardRequest;
-import com.academy.project.demo.dto.request.stripe.CreditCardToStripeRequest;
+import com.academy.project.demo.dto.request.braintree.CreditCardToBrainTreeRequest;
 import com.academy.project.demo.dto.response.CreditCardResponse;
 import com.academy.project.demo.service.CreditCardService;
 import com.stripe.exception.StripeException;
@@ -38,7 +38,7 @@ public class CreditCardController {
 
     @PostMapping("/save/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public HttpEntity<CreditCardResponse> save(@PathVariable Long id, @RequestBody CreditCardToStripeRequest cardRequest) throws Exception {
+    public HttpEntity<CreditCardResponse> save(@PathVariable Long id, @RequestBody CreditCardToBrainTreeRequest cardRequest) throws Exception {
         return new ResponseEntity<>(new CreditCardResponse(creditCardService.save(id, cardRequest)), HttpStatus.OK);
     }
 

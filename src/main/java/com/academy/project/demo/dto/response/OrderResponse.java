@@ -15,6 +15,8 @@ public class OrderResponse {
     private Date createdAt;
     private Date updatedAt;
     private String amount;
+    private TicketResponse ticketResponse;
+
 
 
     public OrderResponse(Order order) {
@@ -25,5 +27,7 @@ public class OrderResponse {
         this.createdAt = order.getCreatedAt();
         this.updatedAt = order.getUpdatedAt();
         this.amount = order.getAmount();
+        this.ticketResponse = new TicketResponse(order);
+
     }
 }
