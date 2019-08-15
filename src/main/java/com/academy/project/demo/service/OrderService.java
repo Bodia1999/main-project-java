@@ -65,6 +65,7 @@ public class OrderService {
         order.setTypeOfEvents(orderRequest.getTypeOfEvents());
         order.setQuantity(orderRequest.getQuantity());
         order.setOccursAt(orderRequest.getOccursAt());
+        order.setNameOfEvent(orderRequest.getNameOfEvent());
 
         order.setUser(customUserDetailsService.loadUserById(orderRequest.getUserId()));
         return order;

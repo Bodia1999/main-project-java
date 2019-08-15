@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request.ticket.evolution.orders;
+package com.academy.project.demo.dto.request.event.brite.orders;
 
 import java.util.ArrayList;
 import java.util.List;

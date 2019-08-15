@@ -47,6 +47,8 @@ public class Order {
     private String occursAt;
     @Column
     private Integer quantity;
+    @Column
+    private String nameOfEvent;
 
 
     @ManyToOne

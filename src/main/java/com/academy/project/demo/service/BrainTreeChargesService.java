@@ -4,7 +4,7 @@ import com.academy.project.demo.dto.request.OrderRequest;
 import com.academy.project.demo.dto.request.SignUpRequest;
 import com.academy.project.demo.dto.request.braintree.ChargeRequest;
 import com.academy.project.demo.dto.request.braintree.CreditCardToBrainTreeRequest;
-import com.academy.project.demo.dto.response.ticket.evolution.tickets.TicketGroupResponse;
+import com.academy.project.demo.dto.response.evolution.tickets.TicketGroupResponse;
 import com.academy.project.demo.entity.Order;
 import com.academy.project.demo.exception.BadRequestException;
 import com.academy.project.demo.exception.WrongInputException;
@@ -96,6 +96,7 @@ public class BrainTreeChargesService {
         orderRequest.setQuantity(quantity);
         orderRequest.setRow(infoAboutTickets.getRow());
         orderRequest.setSection(infoAboutTickets.getSection());
+        orderRequest.setNameOfEvent(infoAboutTickets.getEvent().getName());
         orderRequest.setIfRefunded(false);
         orderService.save(orderRequest);
         return new GsonBuilder().setPrettyPrinting().create().toJson(sale.getTarget());

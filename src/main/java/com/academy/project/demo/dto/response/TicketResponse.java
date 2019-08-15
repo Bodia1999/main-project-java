@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class TicketResponse {
+    private String nameOfEvent;
     private String typeOfEvents;
     private String row;
     private String section;
@@ -12,6 +13,7 @@ public class TicketResponse {
     private Integer quantity;
 
     public TicketResponse (Order order) {
+        this.nameOfEvent = order.getNameOfEvent();
         this.typeOfEvents = order.getTypeOfEvents();
         this.row = order.getRow();
         this.section = order.getSection();

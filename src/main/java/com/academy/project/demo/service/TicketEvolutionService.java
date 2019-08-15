@@ -2,9 +2,10 @@ package com.academy.project.demo.service;
 
 import com.academy.project.demo.dto.request.ticket.evolution.TicketEvolutionRequest;
 import com.academy.project.demo.dto.request.ticket.evolution.orders.*;
-import com.academy.project.demo.dto.response.event.MainInfoTicketResponse;
-import com.academy.project.demo.dto.response.ticket.evolution.tickets.TicketGroupResponse;
-import com.academy.project.demo.dto.response.ticket.evolution.tickets.TicketResponse;
+import com.academy.project.demo.dto.response.evolution.categories.CategoriesResponse;
+import com.academy.project.demo.dto.response.evolution.event.MainInfoTicketResponse;
+import com.academy.project.demo.dto.response.evolution.tickets.TicketGroupResponse;
+import com.academy.project.demo.dto.response.evolution.tickets.TicketResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.codec.binary.Base64;
@@ -25,9 +26,6 @@ public class TicketEvolutionService {
     @Value("${ticket.evolution.token}")
     private String xToken;
 
-//    @Value("${ticket.evolution.signature}")
-//    private String xSignature;
-
     @Value("${ticket.evolution.secret.key}")
     private String secretKey;
 
@@ -46,14 +44,29 @@ public class TicketEvolutionService {
             String replacement = ticketEvolutionRequest.getCityState().trim().replace(" ", "+");
             eventIdUrl.queryParam("city_state", replacement);
         }
+        if (ticketEvolutionRequest.getCategoryId().length() != 0) {
+            eventIdUrl.queryParam("category_id", Integer.parseInt(ticketEvolutionRequest.getCategoryId()));
+
+        }
+
+        if (ticketEvolutionRequest.getQ().length() !=0 ){
+            eventIdUrl.queryParam("q", ticketEvolutionRequest.getQ());
+        }
         uriComponents = eventIdUrl
                 .queryParam("page", ticketEvolutionRequest.getPage())
                 .queryParam("per_page", ticketEvolutionRequest.getPerPage())
                 .queryParam("order_by", "events.popularity_score DESC")
                 .build();
         String response = makeRequest(uriComponents, null, HttpMethod.GET);
+        System.out.println(response);
 
         return gson.fromJson(response, MainInfoTicketResponse.class);
+    }
+
+    public CategoriesResponse getCategories() throws Exception {
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(url + "/categories").build();
+        String answer = makeRequest(uriComponents, null, HttpMethod.GET);
+        return gson.fromJson(answer, CategoriesResponse.class);
     }
 
     public TicketResponse getInfoAboutEvent(String ticketId) throws Exception {
@@ -126,49 +139,49 @@ public class TicketEvolutionService {
     }
 
     public String createCreditCard() throws Exception {
-        String newUrl = url + "/orders";
-        String body = "{\n" +
-                "  \"orders\": [\n" +
-                "    {\n" +
-                "      \"shipped_items\": [\n" +
-                "        {\n" +
-                "          \"items\": [\n" +
-                "            {\n" +
-                "              \"ticket_group_id\": 555611506,\n" +
-                "              \"quantity\": 1,\n" +
-                "              \"price\": 342\n" +
-                "            }\n" +
-                "          ],\n" +
-                "          \"type\": \"FedEx\",\n" +
-                "          \"service_type\": \"LEAST_EXPENSIVE\",\n" +
-                "          \"signature_type\": \"INDIRECT\",\n" +
-                "          \"residential\": true,\n" +
-                "          \"ship_to_company_name\": \"Leftorium\",\n" +
-                "          \"ship_to_name\": \"Ned Flanders\",\n" +
-                "          \"address_id\": 661989,\n" +
-                "          \"phone_number_id\": 306540\n" +
-                "        }\n" +
-                "      ],\n" +
-                "      \"billing_address_id\": 661989,\n" +
-                "      \"payments\": [\n" +
-                "        {\n" +
-                "          \"type\": \"offline\",\n" +
-                "        }\n" +
-                "      ],\n" +
-                "      \"seller_id\": 1942,\n" +
-                "      \"client_id\": 103054,\n" +
-                "      \"created_by_ip_address\": \"12.34.56.78\",\n" +
-                "      \"service_fee\": 0,\n" +
-                "      \"shipping\": 0,\n" +
-                "      \"tax\": 0,\n" +
-                "      \"additional_expense\": 0,\n" +
-                "      \"discount\": 0,\n" +
-                "      \"seller_reference_number\": \"123456789\",\n" +
-                "      \"external_notes\": \"These notes will be visible to all parties\",\n" +
-                "      \"internal_notes\": \"These notes will be visible only to your office (1937)\"\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+        String newUrl = url + "/clients/182066/credit_cards";
+//        String body = "{\n" +
+//                "  \"orders\": [\n" +
+//                "    {\n" +
+//                "      \"shipped_items\": [\n" +
+//                "        {\n" +
+//                "          \"items\": [\n" +
+//                "            {\n" +
+//                "              \"ticket_group_id\": 555611506,\n" +
+//                "              \"quantity\": 1,\n" +
+//                "              \"price\": 342\n" +
+//                "            }\n" +
+//                "          ],\n" +
+//                "          \"type\": \"FedEx\",\n" +
+//                "          \"service_type\": \"LEAST_EXPENSIVE\",\n" +
+//                "          \"signature_type\": \"INDIRECT\",\n" +
+//                "          \"residential\": true,\n" +
+//                "          \"ship_to_company_name\": \"Leftorium\",\n" +
+//                "          \"ship_to_name\": \"Ned Flanders\",\n" +
+//                "          \"address_id\": 661989,\n" +
+//                "          \"phone_number_id\": 306540\n" +
+//                "        }\n" +
+//                "      ],\n" +
+//                "      \"billing_address_id\": 661989,\n" +
+//                "      \"payments\": [\n" +
+//                "        {\n" +
+//                "          \"type\": \"offline\",\n" +
+//                "        }\n" +
+//                "      ],\n" +
+//                "      \"seller_id\": 1942,\n" +
+//                "      \"client_id\": 103054,\n" +
+//                "      \"created_by_ip_address\": \"12.34.56.78\",\n" +
+//                "      \"service_fee\": 0,\n" +
+//                "      \"shipping\": 0,\n" +
+//                "      \"tax\": 0,\n" +
+//                "      \"additional_expense\": 0,\n" +
+//                "      \"discount\": 0,\n" +
+//                "      \"seller_reference_number\": \"123456789\",\n" +
+//                "      \"external_notes\": \"These notes will be visible to all parties\",\n" +
+//                "      \"internal_notes\": \"These notes will be visible only to your office (1937)\"\n" +
+//                "    }\n" +
+//                "  ]\n" +
+//                "}";
 
 //        String body = "{\n" +
 //                "  \"orders\": [\n" +
@@ -195,6 +208,21 @@ public class TicketEvolutionService {
 //                "  ]\n" +
 //                "}";
 
+        String body = "{\\n\" +\n" +
+                "                \"  \\\"credit_cards\\\": [\\n\" +\n" +
+                "                \"    {\\n\" +\n" +
+                "                \"      \\\"label\\\": \\\"Chase Sapphire Reserve\\\",\\n\" +\n" +
+                "                \"      \\\"name\\\": \\\"Ned Flanders\\\",\\n\" +\n" +
+                "                \"      \\\"number\\\": \\\"4111111111111111\\\",\\n\" +\n" +
+                "                \"      \\\"expiration_month\\\": \\\"12\\\",\\n\" +\n" +
+                "                \"      \\\"expiration_year\\\": \\\"2021\\\",\\n\" +\n" +
+                "                \"      \\\"verification_code\\\": \\\"789\\\",\\n\" +\n" +
+                "                \"      \\\"address_id\\\": 661989,\\n\" +\n" +
+                "                \"      \\\"phone_number_id\\\": 306540,\\n\" +\n" +
+                "                \"      \\\"ip_address\\\": \\\"37.235.140.72\\\"\\n\" +\n" +
+                "                \"    }\\n\" +\n" +
+                "                \"  ]\\n\" +\n" +
+                "                \"}";
 
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(newUrl).build();
         String s = makeRequest(uriComponents, body, HttpMethod.POST);

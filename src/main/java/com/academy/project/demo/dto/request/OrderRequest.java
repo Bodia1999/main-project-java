@@ -21,5 +21,6 @@ public class OrderRequest {
     private String section;
     private String occursAt;
     private Integer quantity;
+    private String nameOfEvent;
 
 }

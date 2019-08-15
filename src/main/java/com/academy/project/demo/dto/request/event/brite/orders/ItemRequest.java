@@ -1,4 +1,4 @@
-package com.academy.project.demo.dto.request.ticket.evolution.orders;
+package com.academy.project.demo.dto.request.event.brite.orders;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

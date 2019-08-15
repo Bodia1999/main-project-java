@@ -13,4 +13,5 @@ public class TicketRequest {
     private String section;
     private String occursAt;
     private Integer quantity;
+    private String nameOfEvent;
 }

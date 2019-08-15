@@ -2,7 +2,6 @@ package com.academy.project.demo.dto;
 
 import com.academy.project.demo.dto.response.CreditCardResponse;
 import com.academy.project.demo.dto.response.OrderResponse;
-import com.academy.project.demo.entity.CreditCard;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
