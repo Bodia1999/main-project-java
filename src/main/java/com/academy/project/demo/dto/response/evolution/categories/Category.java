@@ -1,4 +1,5 @@
-package com.academy.project.demo.dto.response.event.brite.events;
+package com.academy.project.demo.dto.response.evolution.categories;
+
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -7,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Logo {
+public class Category {
 
     @SerializedName("id")
     @Expose
@@ -15,5 +16,11 @@ public class Logo {
     @SerializedName("url")
     @Expose
     public String url;
+    @SerializedName("name")
+    @Expose
+    public String name;
+    @SerializedName("updated_at")
+    @Expose
+    public String updatedAt;
 
 }
