@@ -15,16 +15,26 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfig {
 
-
+//    mysql://bfec0db850ce72:0e7ed4bb@us-cdbr-iron-east-02.cleardb.net/heroku_fca584e1e2b322c?reconnect=true
     @Bean
     public HikariConfig hikariConfig() {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setUsername("root");
-        hikariConfig.setPassword("root");
-        hikariConfig.setJdbcUrl("jdbc:mysql://localhost:3306/ticketService?createDatabaseIfNotExist=true&serverTimezone=UTC");
+        hikariConfig.setUsername("bfec0db850ce72");
+        hikariConfig.setPassword("0e7ed4bb");
+        hikariConfig.setJdbcUrl("jdbc:mysql://us-cdbr-iron-east-02.cleardb.net/heroku_fca584e1e2b322c?reconnect=true&serverTimezone=UTC");
         hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return hikariConfig;
     }
+
+//    @Bean
+//    public HikariConfig hikariConfig() {
+//        HikariConfig hikariConfig = new HikariConfig();
+//        hikariConfig.setUsername("root");
+//        hikariConfig.setPassword("root");
+//        hikariConfig.setJdbcUrl("jdbc:mysql://localhost:3306/ticketService?createDatabaseIfNotExist=true&serverTimezone=UTC");
+//        hikariConfig.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        return hikariConfig;
+//    }
 
 
     @Bean
